@@ -21,6 +21,18 @@ class GreetingBlink extends Component {
   }
 }
 
+class FixDimensionsBasics extends Component {
+  render(){
+    return (
+      <View style={{flex:1, flexDirection:'row', justifyContent:'space-around'}}>
+        <View style={{width: 50, height: 50, backgroundColor:'powderblue'}}/>
+        <View style={{width: 50, height: 50, backgroundColor:'skyblue'}}/>
+        <View style={{width: 50, height: 50, backgroundColor:'steelblue'}}/>
+      </View>
+    )
+  }
+}
+
 export default class HelloWorldApp extends Component {
   render() {
     let pic = {
@@ -28,11 +40,12 @@ export default class HelloWorldApp extends Component {
     };
     return (
       <View style={styles.container}>
-        <Text>Open up App.jsddd to start working on your app!</Text>
+        <Text style={styles.red}>Open up App.jsddd to start working on your app!</Text>
         <Text>Changes you make will automatically reload.</Text>
         <Text>Shake your phone to open the developer menu.</Text>
         <GreetingBlink name="Test2"></GreetingBlink>
         <Image source={pic} style={{width:193, height:110}}/>
+        <FixDimensionsBasics/>
       </View>
     );
   }
@@ -46,5 +59,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  bigblue: {
+    color: 'blue',
+    fontWeight: 'bold',
+    fontSize: 30,
+  },
+  red: {
+    color: 'red',
   },
 });
