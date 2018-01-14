@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { AppRegistry, StyleSheet, ScrollView, Text, View , Image, TextInput, Alert, Button} from 'react-native';
+import { AppRegistry, StyleSheet, ScrollView, Text, View , Image, TextInput, Alert, Button, SectionList, ListView, ActivityIndicator} from 'react-native';
 
 class GreetingBlink extends Component {
   constructor(props){
@@ -62,6 +62,48 @@ class ButtonBasics extends Component{
     )
   }
 }
+class MovieList extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      isLoading:true
+    }
+  }
+  componentDidMount(){
+    return getMovisFromApi().then((response)=>{
+      let ds = new ListView.DataSource({rowHasChanged:(r1,r2)=> r1!==r2});
+      this.setState({
+        isLoading:false,
+        dataSource: ds.cloneWithRows(response),
+        function(){
+          //do something with new state
+        }
+      });
+    })
+    .catch((error)=>{
+      console.error(error);
+    });
+  }
+
+  render(){
+    if(this.state.isLoading){
+      return(
+        <View style={{flex:1, paddingTop:20}}>
+        <ActivityIndicator/>
+        </View>
+      );
+    }
+    return(
+      <View >
+        <ListView
+        dataSource = {this.state.dataSource}
+      renderRow = {(item)=> <Text style={styles.item}>Item:{item.title}</Text>}
+        />
+      </View>
+    );
+  }
+}
+
 
 export default class HelloWorldApp extends Component {
   render() {
@@ -69,19 +111,20 @@ export default class HelloWorldApp extends Component {
       uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'
     };
     return (
-      <ScrollView contentContainerStyle={styles.container}>
+      <View contentContainerStyle={styles.container}>
         <Text style={styles.red}>Open up App.jsddd to start working on your app!</Text>
         <Text style={{fontSize:50}} >Changes you make will automatically reload.</Text>
         <Text>Shake your phone to open the developer menu.</Text>
         <GreetingBlink name="Test2"></GreetingBlink>
         <Image source={pic} style={{width:193, height:110}}/>
         <PizzaTranslator />
+        <MovieList/>
         <FixDimensionsBasics/>
         <ButtonBasics/>
         <PizzaTranslator/>
         <Image source={pic} style={{width:193, height:110}}/>
         <Image source={pic} style={{width:193, height:110}}/>
-      </ScrollView>
+      </View>
     );
   }
 }
@@ -104,3 +147,14 @@ const styles = StyleSheet.create({
     color: 'red',
   },
 });
+
+async function getMovisFromApi(){
+  try {
+    let response = await fetch('https://facebook.github.io/react-native/movies.json');
+    let responseJson =  await response.json();
+    return responseJson.movies;
+  } catch (error) {
+    console.error(error);
+  }
+
+}
